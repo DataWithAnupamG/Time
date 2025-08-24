@@ -8,41 +8,53 @@
 
 /* Root variables for theme and responsive font size */
 :root {
-    --hue: 223; /* Base hue for color theme */
+    --hue: 223;
     --bg: hsl(var(--hue),90%,90%);
     --fg: hsl(var(--hue),10%,10%);
     --primary: hsl(var(--hue),90%,55%);
-    --trans-dur: 0.3s; /* Transition duration */
-    font-size: calc(16px + (20 - 16) * (100vw - 320px) / (1280 - 320)); /* Responsive font size */
+    --trans-dur: 0.3s;
+    font-size: calc(16px + (20 - 16) * (100vw - 320px) / (1280 - 320));
 }
 
-/* Body styling and centering */
+/* Body styling with background image and overlay */
 body {
-    background-color: hsl(0deg 0% 100%);
+    background: url("https://wallpapers-clan.com/wp-content/uploads/2025/07/marvel-iron-man-blue-sky-vision-desktop-wallpaper-preview.jpg")
+                no-repeat center center fixed;
+    background-size: cover;
     color: var(--fg);
     font: 1em/1.5 "DM Sans", sans-serif;
     height: 100vh;
     display: grid;
     place-items: center;
-    transition:
-        background-color var(--trans-dur),
-        color var(--trans-dur);
+    transition: background-color var(--trans-dur), color var(--trans-dur);
+    position: relative;
 }
 
-/* Main clock container - centered and shifted down */
+/* Dark overlay for readability */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 0;
+}
+
+/* Clock container */
 .clock {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
-    transform: translateY(16vh); /* Moves clock slightly down from center */
+    transform: translateY(16vh);
+    z-index: 1;
 }
 
 /* Large clock block styling */
 .clock__block {
-    background-color: hsl(var(--hue),10%,90%);
-    border-radius: 0.5rem;
-    box-shadow: 0 1rem 2rem hsla(var(--hue),90%,50%,0.3);
+    background-color: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    border-radius: 0.75rem;
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.4);
     font-size: 3em;
     line-height: 2;
     margin: 0.75rem;
@@ -50,30 +62,32 @@ body {
     text-align: center;
     width: 6rem;
     height: 6rem;
-    transition:
-        background-color var(--trans-dur),
-        box-shadow var(--trans-dur);
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    transition: background-color var(--trans-dur), box-shadow var(--trans-dur);
 }
 
-/* Small clock block styling */
+/* Small block */
 .clock__block--small {
     border-radius: 0.25rem;
-    box-shadow: 0 0.5rem 2rem hsla(var(--hue),90%,50%,0.3);
+    box-shadow: 0 0.5rem 2rem rgba(0,0,0,0.5);
     font-size: 1em;
     line-height: 3;
     width: 3rem;
     height: 3rem;
 }
 
-/* Colon between clock blocks (hidden by default) */
+/* Colon styling */
 .clock__colon {
     display: none;
     font-size: 2em;
-    opacity: 0.5;
+    opacity: 0.8;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
     position: relative;
 }
 
-/* Colon dots styling */
+/* Colon dots */
 .clock__colon:before,
 .clock__colon:after {
     background-color: currentColor;
@@ -85,17 +99,13 @@ body {
     left: -0.05em;
     width: 0.1em;
     height: 0.1em;
-    transition: background-color var(--trans-dur);
 }
 
-/* Top dot of colon */
 .clock__colon:before {
     transform: translateY(-200%);
 }
-
-/* Bottom dot of colon */
 .clock__colon:after {
-    transform: translateY(200%);	
+    transform: translateY(200%);
 }
 
 /* Digit group for rolling animation */
@@ -103,25 +113,21 @@ body {
     display: flex;
     flex-direction: column-reverse;
 }
-
-/* Digits fill block */
 .clock__digits {
     width: 100%;
     height: 100%;
 }
 
-/* Bounce animation for block */
+/* Bounce & roll animations */
 .clock__block--bounce {
     animation: bounce 0.75s; 
 }
-
-/* Roll animation for digit group inside bouncing block */
 .clock__block--bounce .clock__digit-group {
     animation: roll 0.75s ease-in-out forwards; 
     transform: translateY(-50%);
 }
 
-/* Animation delay classes for staggered effect */
+/* Animation delays */
 .clock__block--delay1,
 .clock__block--delay1 .clock__digit-group {
     animation-delay: 0.1s;
@@ -131,22 +137,7 @@ body {
     animation-delay: 0.2s;
 }
 
-/* Dark theme overrides */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: hsl(var(--hue),10%,10%);
-        --fg: hsl(var(--hue),10%,90%);
-    }
-    .clock__block {
-        background-color: hsl(var(--hue),90%,40%);
-        box-shadow: 0 1rem 2rem hsla(var(--hue),90%,60%,0.4);
-    }
-    .clock__block--small {
-        box-shadow: 0 0.5rem 2rem hsla(var(--hue),90%,60%,0.4);
-    }
-}
-
-/* Layout changes for screens wider than 768px */
+/* Wide screens: horizontal layout */
 @media (min-width: 768px) {
     .clock {
         flex-direction: row;
@@ -156,25 +147,12 @@ body {
     }
 }
 
-/* Bounce animation keyframes */
+/* Animations */
 @keyframes bounce {
-    from,
-    to {
-        animation-timing-function: ease-in;
-        transform: translateY(0);
-    }
-    50% {
-        animation-timing-function: ease-out;
-        transform: translateY(15%);
-    }
+    from, to { transform: translateY(0); }
+    50% { transform: translateY(15%); }
 }
-
-/* Roll animation keyframes */
 @keyframes roll {
-    from {
-        transform: translateY(-50%);
-    }
-    to {
-        transform: translateY(0);
-    }
+    from { transform: translateY(-50%); }
+    to { transform: translateY(0); }
 }
